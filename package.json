@@ -1,0 +1,205 @@
+{
+  "name": "zai-glm-usage-tracker",
+  "displayName": "Z.ai GLM Usage Tracker",
+  "description": "Real-time Z.ai GLM token quota and usage monitor for VS Code and Antigravity IDE",
+  "version": "0.3.0",
+  "publisher": "fahim",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fahim06/zai-glm-usage-tracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/fahim06/zai-glm-usage-tracker/issues"
+  },
+  "homepage": "https://github.com/fahim06/zai-glm-usage-tracker#readme",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Visualization"
+  ],
+  "keywords": [
+    "z.ai",
+    "zai",
+    "glm",
+    "usage",
+    "tokens",
+    "quota",
+    "antigravity"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:zaiUsage.setApiKey",
+    "onCommand:zaiUsage.clearApiKey",
+    "onCommand:zaiUsage.refresh",
+    "onCommand:zaiUsage.showMenu",
+    "onCommand:zaiUsage.switchAccount",
+    "onCommand:zaiUsage.addAccount",
+    "onCommand:zaiUsage.removeAccount",
+    "onCommand:zaiUsage.openHistory",
+    "onCommand:zaiUsage.exportReport"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "zaiUsage.setApiKey",
+        "title": "Z.ai GLM: Set API Key",
+        "category": "Z.ai Usage"
+      },
+      {
+        "command": "zaiUsage.clearApiKey",
+        "title": "Z.ai GLM: Clear API Key",
+        "category": "Z.ai Usage"
+      },
+      {
+        "command": "zaiUsage.refresh",
+        "title": "Z.ai GLM: Refresh Usage Data",
+        "category": "Z.ai Usage",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "zaiUsage.showMenu",
+        "title": "Z.ai GLM: Show Usage Menu",
+        "category": "Z.ai Usage"
+      },
+      {
+        "command": "zaiUsage.switchAccount",
+        "title": "Z.ai GLM: Switch Account",
+        "category": "Z.ai Usage",
+        "icon": "$(arrow-swap)"
+      },
+      {
+        "command": "zaiUsage.addAccount",
+        "title": "Z.ai GLM: Add Account",
+        "category": "Z.ai Usage",
+        "icon": "$(plus)"
+      },
+      {
+        "command": "zaiUsage.removeAccount",
+        "title": "Z.ai GLM: Remove Account",
+        "category": "Z.ai Usage",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "zaiUsage.openHistory",
+        "title": "Z.ai GLM: View Usage History & Charts",
+        "category": "Z.ai Usage",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "zaiUsage.exportReport",
+        "title": "Z.ai GLM: Export Usage & Expense Report",
+        "category": "Z.ai Usage",
+        "icon": "$(file-text)"
+      }
+    ],
+    "configuration": {
+      "title": "Z.ai GLM Usage Tracker",
+      "properties": {
+        "zaiUsage.apiEndpoint": {
+          "type": "string",
+          "default": "https://api.z.ai",
+          "description": "Z.ai API base endpoint. Use https://open.bigmodel.cn for mainland China servers.",
+          "enum": [
+            "https://api.z.ai",
+            "https://open.bigmodel.cn"
+          ],
+          "enumDescriptions": [
+            "Global platform (api.z.ai)",
+            "China regional platform (open.bigmodel.cn)"
+          ]
+        },
+        "zaiUsage.refreshInterval": {
+          "type": "integer",
+          "default": 10,
+          "minimum": 5,
+          "maximum": 3600,
+          "description": "Interval in seconds between automated usage quota refreshes (default 10s, minimum 5s)."
+        },
+        "zaiUsage.statusBar.showResetTime": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show remaining quota reset time in the status bar (e.g. 5h: 16% (2h 15m))."
+        },
+        "zaiUsage.planTier": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "lite",
+            "pro",
+            "max"
+          ],
+          "enumDescriptions": [
+            "Auto-detect subscription plan from API",
+            "Lite plan (~120 prompts / 2,000 credits per 5h)",
+            "Pro plan (~600 prompts / 12,000 credits per 5h)",
+            "Max plan (~2,400 prompts / 28,000 credits per 5h)"
+          ],
+          "description": "Subscription tier used for credit calculations if not returned by API."
+        },
+        "zaiUsage.notifications.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable native warning notifications when usage crosses quota thresholds."
+        },
+        "zaiUsage.notifications.thresholds": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "default": [
+            80,
+            95
+          ],
+          "description": "Quota percentage thresholds (1-100) that trigger warning notifications."
+        },
+        "zaiUsage.history.retentionDays": {
+          "type": "integer",
+          "default": 30,
+          "minimum": 1,
+          "maximum": 90,
+          "description": "Number of days of usage snapshots to retain for historical charts."
+        },
+        "zaiUsage.smartPolling.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically throttle API polling when inactive or editor window is unfocused."
+        },
+        "zaiUsage.smartPolling.idleTimeoutMinutes": {
+          "type": "integer",
+          "default": 5,
+          "minimum": 1,
+          "maximum": 60,
+          "description": "Minutes of inactivity before transitioning to idle polling cadence."
+        },
+        "zaiUsage.smartPolling.idleInterval": {
+          "type": "integer",
+          "default": 300,
+          "minimum": 60,
+          "maximum": 1800,
+          "description": "Polling interval in seconds while idle (minimum 60s)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "tsc -p ./ --noEmit && node esbuild.js",
+    "watch": "tsc -watch -p ./ --noEmit",
+    "package": "node esbuild.js --production",
+    "typecheck": "tsc -p ./ --noEmit",
+    "test": "node -e 'require(\"esbuild\").buildSync({ entryPoints: [\"tests/index.ts\"], outfile: \"dist/test.js\", bundle: true, platform: \"node\", external: [\"node:test\", \"node:assert\", \"vscode\"] })' && node --test dist/test.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.3.3"
+  }
+}

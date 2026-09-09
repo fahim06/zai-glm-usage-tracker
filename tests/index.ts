@@ -1,0 +1,13 @@
+import './mockVscode';
+import './apiClient.test';
+import './formatters.test';
+import './usageNormalizer.test';
+import './tooltipBuilder.test';
+import './quickPickMenu.test';
+import './backoff.test';
+import './alertService.test';
+import './accountManager.test';
+import './historyService.test';
+import './activityTracker.test';
+import './burnRate.test';
+import './reportGenerator.test';
